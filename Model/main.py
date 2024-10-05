@@ -1,5 +1,5 @@
-from tienda.model.conexion import Conexion
-from tienda.model.base.producto_base import ProductoBase
+from Model.conexion import Conexion
+from Model.producto_base import ProductoBase
 import sys
 
 def main():

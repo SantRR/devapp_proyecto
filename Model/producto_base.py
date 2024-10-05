@@ -1,12 +1,12 @@
-from tienda.model.base.producto import Producto
-from tienda.model.conexion import Conexion
+from Model.producto import Producto
+from Model.conexion import Conexion
 
 class ProductoBase():
     def __init__(self):
         self.producto = Producto()
         return
     
-    def guardar_producto(self):
+    def agregar_producto(self):
         basedatos = Conexion()
         basedatos.establecer_conexion()
         sp = "exec [dbo].[sp_insertar_producto] @clave=?, @descripcion=?, @existencia=?, @precio=?"
@@ -17,7 +17,7 @@ class ProductoBase():
         basedatos.cerrar_conexion()
         return
     
-    def actualizar_producto(self):
+    def modificar_producto(self):
         basedatos = Conexion()
         basedatos.establecer_conexion()
         sp = "exec [dbo].[sp_actualizar_producto] @id_producto=?, @clave=?, @descripcion=?, @existencia=?, @precio=?"
@@ -46,10 +46,9 @@ class ProductoBase():
         cursor = basedatos.conexion.cursor()
         cursor.execute(fn)
         cantidad = cursor.fetchone()
-        print(cantidad[0])
         cursor.commit()
         basedatos.cerrar_conexion()
-        return
+        return cantidad[0]
     
     def lista_producto(self):
         basedatos = Conexion()
@@ -62,3 +61,15 @@ class ProductoBase():
             print(fila)
         basedatos.cerrar_conexion()
         return
+
+    def obtener_id_por_clave(self, clave):
+        basedatos = Conexion()
+        basedatos.establecer_conexion()
+        cursor = basedatos.conexion.cursor()
+        params = (clave)
+        consulta = "SELECT id_producto FROM productos WHERE clave = ?"
+        cursor.execute(consulta, params)
+        resultado = cursor.fetchone()
+        cursor.commit()
+        basedatos.cerrar_conexion()
+        return resultado[0]
