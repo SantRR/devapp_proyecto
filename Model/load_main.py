@@ -1,4 +1,3 @@
-# from Model.load_login import LoadLogin
 from Model.producto_base import ProductoBase
 from Model.tabla_no_editable import NoEditableModel
 from PyQt6.QtWidgets import QMainWindow, QHeaderView
@@ -7,8 +6,9 @@ from PyQt6 import uic, QtCore
 import os, sys
 
 class LoadMain(QMainWindow):
-    def __init__(self):
+    def __init__(self, controlador):
         super().__init__()
+        self.controlador = controlador
         self.inicializar_main()
         return
     
@@ -131,18 +131,14 @@ class LoadMain(QMainWindow):
             return True, existencia_int, precio_float
         if not valido_exis and not valido_precio:
             self.limpiar_lbls()
-            # self.main.txt_existencia.setText("Error")
-            # self.main.txt_precio.setText("Error")
             self.mostrar_mensaje_consola("\"Existencia\" debe ser [int]")
             self.mostrar_mensaje_consola("\"Precio\" debe ser [float]")
             return False
         if not valido_exis:
             self.limpiar_lbls()
-            # self.main.txt_existencia.setText("Error")
             self.mostrar_mensaje_consola("\"Existencia\" debe ser [int]")
         if not valido_precio:
             self.limpiar_lbls()
-            # self.main.txt_precio.setText("Error")
             self.mostrar_mensaje_consola("\"Precio\" debe ser [float]")
         return False
     
@@ -157,13 +153,11 @@ class LoadMain(QMainWindow):
         self.main.txt_descripcion.setText("")
         self.main.txt_existencia.setText("")
         self.main.txt_precio.setText("")
-        
-    def on_click_btn_salir(self):
-        self.main.close()
-        # self.login = LoadLogin()
-        # self.login.show()
-        return
 
     def mostrar_mensaje_consola(self, mensaje):
         self.main.txt_consola.append(mensaje)
         self.main.txt_consola.verticalScrollBar().setValue(self.main.txt_consola.verticalScrollBar().maximum())
+
+    def on_click_btn_salir(self):
+        self.controlador.show_login()
+        return

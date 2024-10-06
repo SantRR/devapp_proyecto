@@ -1,11 +1,12 @@
-# from Model.load_main import LoadMain
+from Model.control import ControladorVentanas
 from PyQt6.QtWidgets import QDialog
 from PyQt6 import uic
 import os, sys
 
 class LoadLogin(QDialog):
-    def __init__(self):
+    def __init__(self, controlador):
         super().__init__()
+        self.controlador = controlador
         self.inicializar_login()
         return
     
@@ -19,7 +20,6 @@ class LoadLogin(QDialog):
         return
     
     def on_click_btn_ingresar(self):
-        self.login.close()
-        self.main = LoadMain()
-        self.main.show
+        self.controlador.show_main()
         return
+    
