@@ -298,7 +298,7 @@ color: rgb(240, 240, 240);
 border-radius: 10px;</string>
     </property>
     <property name="text">
-     <string>Modiifcar</string>
+     <string>Modificar</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btn_eliminar">

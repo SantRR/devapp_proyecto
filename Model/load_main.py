@@ -2,8 +2,7 @@ from Model.load_login import LoadLogin
 from Model.producto_base import ProductoBase
 from PyQt6.QtWidgets import QMainWindow
 from PyQt6 import uic
-import os
-import sys
+import os, sys
 
 class LoadMain(QMainWindow):
     def __init__(self):
@@ -25,11 +24,11 @@ class LoadMain(QMainWindow):
         self.main.btn_eliminar.clicked.connect(self.on_click_btn_eliminar)
         self.main.btn_mostrar.clicked.connect(self.on_click_btn_mostrar)
         self.main.btn_salir.clicked.connect(self.on_click_btn_salir)
+        return
         
     def on_click_btn_modificar(self):
         if self.validar_valores():
             clave, descripcion, existencia, precio = self.obtener_valores_reales()
-            producto_base = ProductoBase()
             producto_base = ProductoBase()
             producto_base.producto.clave       = clave
             producto_base.producto.descripcion = descripcion
@@ -74,10 +73,10 @@ class LoadMain(QMainWindow):
         return
     
     def obtener_valores_str(self):
-        clave_str       = self.main.txt_clave.text()              # str
+        clave_str       = self.main.txt_clave.text()        # str
         descripcion_str = self.main.txt_descripcion.text()  # str
-        existencia_str  = self.main.txt_existencia.text()    # int
-        precio_str      = self.main.txt_precio.text()            # float
+        existencia_str  = self.main.txt_existencia.text()   # int
+        precio_str      = self.main.txt_precio.text()       # float
         return clave_str, descripcion_str, existencia_str, precio_str
     
     def validar_valores(self):
