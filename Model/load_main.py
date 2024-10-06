@@ -18,7 +18,7 @@ class LoadMain(QMainWindow):
         directorio_main = os.path.join(directorio_actual, "../ui/main.ui")
         self.main = uic.loadUi(directorio_main, self)
         
-        self.main.setFixedSize(900, 720)
+        self.main.setFixedSize(1440, 720)
         self.setWindowTitle("Main administrador inventario")
         
         self.main.tbl_mostrar_productos.setVerticalHeader(QHeaderView(QtCore.Qt.Orientation.Vertical))
@@ -34,9 +34,11 @@ class LoadMain(QMainWindow):
         return
         
     def on_click_btn_modificar(self):
+        self.mostrar_mensaje_consola("Modificando producto...")
         if self.validar_valores():
             clave, descripcion, existencia, precio = self.obtener_valores_reales()
             producto_base = ProductoBase()
+            producto_base.producto.id_producto = producto_base.obtener_id_por_clave(clave)
             producto_base.producto.clave       = clave
             producto_base.producto.descripcion = descripcion
             producto_base.producto.existencia  = existencia
@@ -44,13 +46,14 @@ class LoadMain(QMainWindow):
             producto_base.modificar_producto()
             self.limpiar_lbls()
             self.on_click_btn_mostrar()
+            self.mostrar_mensaje_consola("Valores modificados\n")
             return
-        else:
-            
-            return
-    
+        self.mostrar_mensaje_consola("Error al modificar producto\n")
+        return
+
     def on_click_btn_eliminar(self):
         clave = self.main.txt_clave.text()
+        self.mostrar_mensaje_consola("Eliminando producto...")
         if clave:
             producto_base = ProductoBase()
             id_producto = producto_base.obtener_id_por_clave(clave)
@@ -58,9 +61,13 @@ class LoadMain(QMainWindow):
             producto_base.eliminar_producto()
             self.limpiar_lbls()
             self.on_click_btn_mostrar()
+            self.mostrar_mensaje_consola("Producto eliminado\n")
+            return
+        self.mostrar_mensaje_consola("Error al eliminar producto\n")
         return
     
     def on_click_btn_agregar(self):
+        self.mostrar_mensaje_consola("Agregando producto...")
         if self.validar_valores():
             clave, descripcion, existencia, precio = self.obtener_valores_reales()
             producto_base = ProductoBase()
@@ -71,11 +78,13 @@ class LoadMain(QMainWindow):
             producto_base.agregar_producto()
             self.limpiar_lbls()
             self.on_click_btn_mostrar()
+            self.mostrar_mensaje_consola("Producto agregado\n")
             return
-        else:
-            return
+        self.mostrar_mensaje_consola("Error al agregar producto\n")
+        return
     
     def on_click_btn_mostrar(self):
+        self.mostrar_mensaje_consola("Actualizando tabla...")
         modelo_tabla = NoEditableModel()
         encabezados = ["ID producto", "Clave", "Descripción", "Existencia", "Precio"]
         modelo_tabla.setHorizontalHeaderLabels(encabezados)
@@ -96,6 +105,7 @@ class LoadMain(QMainWindow):
         self.main.tbl_mostrar_productos.setColumnWidth(2, 328)  # Ancho para la columna de descripción
         self.main.tbl_mostrar_productos.setColumnWidth(3, 104)  # Ancho para la columna de existencia
         self.main.tbl_mostrar_productos.setColumnWidth(4, 104)  # Ancho para la columna de precio
+        self.mostrar_mensaje_consola("Tabla actualizada")
         return
     
     def obtener_valores_str(self):
@@ -111,20 +121,30 @@ class LoadMain(QMainWindow):
             existencia_int = int(existencia_str)
             valido_exis = True
         except ValueError:
-            self.main.txt_clave.setText("")
-            self.main.txt_descripcion.setText("")
-            self.main.txt_existencia.setText("Error")
             valido_exis = False
         try:
             precio_float = float(precio_str)
             valido_precio = True
         except ValueError:
-            self.main.txt_clave.setText("")
-            self.main.txt_descripcion.setText("")
-            self.main.txt_precio.setText("Error")
             valido_precio = False
-        if (valido_exis and valido_precio): return True, existencia_int, precio_float
-        else: return False
+        if valido_exis and valido_precio: 
+            return True, existencia_int, precio_float
+        if not valido_exis and not valido_precio:
+            self.limpiar_lbls()
+            # self.main.txt_existencia.setText("Error")
+            # self.main.txt_precio.setText("Error")
+            self.mostrar_mensaje_consola("\"Existencia\" debe ser [int]")
+            self.mostrar_mensaje_consola("\"Precio\" debe ser [float]")
+            return False
+        if not valido_exis:
+            self.limpiar_lbls()
+            # self.main.txt_existencia.setText("Error")
+            self.mostrar_mensaje_consola("\"Existencia\" debe ser [int]")
+        if not valido_precio:
+            self.limpiar_lbls()
+            # self.main.txt_precio.setText("Error")
+            self.mostrar_mensaje_consola("\"Precio\" debe ser [float]")
+        return False
     
     def obtener_valores_reales(self):
         clave_str, descripcion_str, existencia_str, precio_str = self.obtener_valores_str()
@@ -143,3 +163,7 @@ class LoadMain(QMainWindow):
         # self.login = LoadLogin()
         # self.login.show()
         return
+
+    def mostrar_mensaje_consola(self, mensaje):
+        self.main.txt_consola.append(mensaje)
+        self.main.txt_consola.verticalScrollBar().setValue(self.main.txt_consola.verticalScrollBar().maximum())
