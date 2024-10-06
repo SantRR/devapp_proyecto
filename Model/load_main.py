@@ -1,7 +1,8 @@
 # from Model.load_login import LoadLogin
 from Model.producto_base import ProductoBase
+from Model.tabla_no_editable import NoEditableModel
 from PyQt6.QtWidgets import QMainWindow, QHeaderView
-from PyQt6.QtGui import QStandardItemModel, QStandardItem
+from PyQt6.QtGui import QStandardItem
 from PyQt6 import uic, QtCore
 import os, sys
 
@@ -75,7 +76,7 @@ class LoadMain(QMainWindow):
             return
     
     def on_click_btn_mostrar(self):
-        modelo_tabla = QStandardItemModel()
+        modelo_tabla = NoEditableModel()
         encabezados = ["ID producto", "Clave", "Descripción", "Existencia", "Precio"]
         modelo_tabla.setHorizontalHeaderLabels(encabezados)
         producto_base = ProductoBase()
