@@ -46,7 +46,6 @@ class ProductoBase():
         cursor = basedatos.conexion.cursor()
         cursor.execute(fn)
         cantidad = cursor.fetchone()
-        cursor.commit()
         basedatos.cerrar_conexion()
         return cantidad[0]
     
@@ -57,19 +56,29 @@ class ProductoBase():
         sp = "exec [dbo].[sp_listar_productos]"
         cursor.execute(sp)
         filas = cursor.fetchall()
+        lista_productos = []
         for fila in filas:
-            print(fila)
+            producto = {
+                "id_producto": fila[0],
+                "clave": fila[1],
+                "descripcion": fila[2],
+                "existencia": fila[3],
+                "precio": fila[4]
+            }
+            lista_productos.append(producto)
         basedatos.cerrar_conexion()
-        return
+        return lista_productos
 
     def obtener_id_por_clave(self, clave):
         basedatos = Conexion()
         basedatos.establecer_conexion()
         cursor = basedatos.conexion.cursor()
-        params = (clave)
-        consulta = "SELECT id_producto FROM productos WHERE clave = ?"
+        params = (clave,)
+        consulta = "SELECT [dbo].[fn_obtener_id_producto_por_clave](?)"
         cursor.execute(consulta, params)
         resultado = cursor.fetchone()
-        cursor.commit()
         basedatos.cerrar_conexion()
-        return resultado[0]
+        if resultado:
+            return resultado[0]
+        else:
+            return None

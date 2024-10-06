@@ -1,4 +1,4 @@
-import pyodbc   # type: ignore
+import pyodbc
 
 class Conexion():
     def __init__(self):
@@ -14,5 +14,7 @@ class Conexion():
         return
     
     def cerrar_conexion(self):
+        print("cerrando conexion...")
         self.conexion.close()
+        print("conexion cerrada")
         return
